@@ -6,8 +6,8 @@ export const NavBar = () => {
     <nav className="orange lighten-1">
       <div className="nav-wrapper container">
         <NavLink to="/" className="brand-logo">
-          AWS-Amplify
-          <i style={{ fontSize: "50px" }} className="small material-icons">
+          My storage
+          <i style={{ fontSize: "50px" }} className="material-icons">
             cloud
           </i>
         </NavLink>
@@ -16,7 +16,7 @@ export const NavBar = () => {
             <NavLink to="/">Home</NavLink>
           </li>
           <li>
-            <NavLink to="/products">Products</NavLink>
+            <NavLink to="/storage">Storage</NavLink>
           </li>
           <li>
             <NavLink to="/login" className="orange darken-4 waves-effect waves-light btn-small">
@@ -25,7 +25,7 @@ export const NavBar = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/login" className="waves-effect waves-light btn-small">
+            <NavLink to="/signup" className="waves-effect waves-light btn-small">
               Sign up
               <i style={{ fontSize: "20px" }} className="material-icons right">how_to_reg</i>
             </NavLink>
