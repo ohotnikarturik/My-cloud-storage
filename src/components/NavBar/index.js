@@ -2,11 +2,15 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 export const NavBar = () => {
+  const brandLogo = {
+    fontSize: "24px"
+  }
+
   return (
-    <nav className="orange lighten-1">
+    <nav className="blue-grey darken-3">
       <div className="nav-wrapper container">
-        <NavLink to="/" className="brand-logo">
-          My storage
+        <NavLink to="/" style={brandLogo} className="brand-logo">
+          Cloud storage
           <i style={{ fontSize: "50px" }} className="material-icons">
             cloud
           </i>
@@ -19,7 +23,7 @@ export const NavBar = () => {
             <NavLink to="/storage">Storage</NavLink>
           </li>
           <li>
-            <NavLink to="/login" className="orange darken-4 waves-effect waves-light btn-small">
+            <NavLink to="/login" className="waves-effect waves-light btn-small">
               Log in
               <i style={{ fontSize: "20px" }} className="material-icons right">login</i>
             </NavLink>

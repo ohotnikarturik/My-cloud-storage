@@ -5,7 +5,8 @@ import {
 } from "react-router-dom";
 
 import { useRoutes } from "./useRoutes";
-import { NavBar } from "./components/NavBar/NavBar";
+import { NavBar } from "./components/NavBar";
+import Footer from "./components/Footer";
 
 const App = () => {
   const routes = useRoutes()
@@ -13,7 +14,8 @@ const App = () => {
   return (
     <Router>
       <NavBar />
-      <div style={{height: '100%'}} >{routes}</div> 
+      <main style={{minHeight: '100%'}} >{routes}</main> 
+      <Footer />
     </Router>
   
   )
