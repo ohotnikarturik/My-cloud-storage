@@ -17,6 +17,10 @@ body {
   margin-bottom: 0 !important;
 }
 
+.btn-small {
+  font-size: 12px !important;
+}
+
 /* label focus color
 .input-field input:focus + label {
   color: #2cbbad !important;

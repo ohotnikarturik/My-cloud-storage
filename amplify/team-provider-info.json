@@ -1,0 +1,25 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-mycloudstorage-dev-105156-authRole",
+      "UnauthRoleArn": "arn:aws:iam::398573658390:role/amplify-mycloudstorage-dev-105156-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::398573658390:role/amplify-mycloudstorage-dev-105156-authRole",
+      "Region": "eu-central-1",
+      "DeploymentBucketName": "amplify-mycloudstorage-dev-105156-deployment",
+      "UnauthRoleName": "amplify-mycloudstorage-dev-105156-unauthRole",
+      "StackName": "amplify-mycloudstorage-dev-105156",
+      "StackId": "arn:aws:cloudformation:eu-central-1:398573658390:stack/amplify-mycloudstorage-dev-105156/4b558810-3c57-11eb-a1cf-0ad75412b350",
+      "AmplifyAppId": "d2a7f85yzs0tri"
+    },
+    "categories": {
+      "auth": {
+        "mycloudstorage85a68d6d": {
+          "userPoolId": "eu-central-1_x19rvlO1W",
+          "userPoolName": "My Cloud Storage",
+          "webClientId": "5s1ag5rinr7jj7u09i14fckva5",
+          "nativeClientId": "33d8qe8583loav4lopdc4gnic1"
+        }
+      }
+    }
+  }
+}

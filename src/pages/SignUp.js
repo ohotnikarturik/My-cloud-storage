@@ -18,6 +18,7 @@ const SignUp = () => {
     password: "",
     confirmpassword: "",
   });
+  console.log('state',user);
 
   const [error, setError] = useState({
     errors: {
@@ -41,15 +42,16 @@ const SignUp = () => {
     event.preventDefault();
 
     // Form validation
-    clearErrorState();
-    const error = Validate(event, user);
-    if (error) {
-      setError({
-        errors: { ...error.errors, ...error },
-      });
-    }
+    // clearErrorState();
+    // const error = Validate(event, user);
+    // if (error) {
+    //   setError({
+    //     errors: { ...error.errors, ...error },
+    //   });
+    // }
 
     // AWS Cognito integration here
+    console.log(user);
     const { username, email, password } = user;
     try {
       const signUpResponse = await Auth.signUp({
@@ -62,6 +64,7 @@ const SignUp = () => {
       history.push("/storage");
       console.log(signUpResponse);
     } catch (error) {
+      console.log(error) 
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
       setError({
@@ -74,9 +77,8 @@ const SignUp = () => {
   };
 
   const onInputChange = (event) => {
-    setUser({
-      [event.target.id]: event.target.value,
-    });
+    // setForm({ ...form, [event.target.name]: event.target.value })
+    setUser({ ...user, [event.target.id]: event.target.value });
     // document.getElementById(event.target.id).classList.remove("is-danger");
   };
 
@@ -88,18 +90,30 @@ const SignUp = () => {
       >
         Sign up
       </h4>
-      <form className="col s12">
+      <form  className="col s12">
         <div className="row">
           <div className="input-field col s6 offset-s3">
             <i className="material-icons  prefix">account_circle</i>
-            <input id="username" type="text" className="validate" />
+            <input
+              onChange={onInputChange}
+              id="username"
+              type="text"
+              className="validate"
+              value={user.username}
+            />
             <label htmlFor="username">User Name</label>
           </div>
         </div>
         <div className="row">
           <div className="input-field col s6 offset-s3">
             <i className="material-icons  prefix">email</i>
-            <input id="email" type="email" className="validate" />
+            <input
+              onChange={onInputChange}
+              id="email"
+              type="email"
+              className="validate"
+              value={user.email}
+            />
             <label htmlFor="email">Email</label>
           </div>
         </div>
@@ -107,9 +121,11 @@ const SignUp = () => {
           <div className="input-field col s6 offset-s3">
             <i className="material-icons prefix">password</i>
             <input
+              onChange={onInputChange}
               id="password"
               type="password"
               className="validate teal-input"
+              value={user.password}
             />
             <label htmlFor="password">Password</label>
           </div>
@@ -117,26 +133,36 @@ const SignUp = () => {
         <div className="row">
           <div className="input-field col s6 offset-s3">
             <i className="material-icons prefix">password</i>
-            <input id="confirm-password" type="password" className="validate" />
-            <label htmlFor="confirm-password">Confirm password</label>
+            <input
+              onChange={onInputChange}
+              id="confirmpassword"
+              type="password"
+              className="validate"
+              value={user.confirmpassword}
+            />
+            <label htmlFor="confirmpassword">Confirm password</label>
           </div>
         </div>
       </form>
-      <ul className="input-field col s6 offset-s3">
-        <li className="col s6">
+      <div>
+        <div style={{marginBottom: "20px"}} className="col s6 offset-s3">
           <NavLink
             to="/forgotpassword"
-            class="waves-effect waves-teal btn-flat"
+            className="waves-effect waves-light btn-small blue-grey darken-2 right" 
           >
             Forgot password?
           </NavLink>
-        </li>
-        <li className="col s6">
-          <NavLink to="/signup" className="waves-effect waves-light btn-small right">
+        </div>
+        <div className="col s6 offset-s3">
+          <NavLink
+            onClick={handleSubmit}
+            to="/signup"
+            className="waves-effect waves-light btn-small right"
+          >
             Sign up
           </NavLink>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
   );
 

@@ -1,0 +1,11 @@
+{
+  "auth": {
+    "mycloudstorage85a68d6d": {
+      "service": "Cognito",
+      "serviceType": "imported",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}

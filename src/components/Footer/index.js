@@ -30,11 +30,6 @@ const Footer = () => {
                   Link 2
                 </a>
               </li>
-              <li>
-                <a className="grey-text text-lighten-3" href="#!">
-                  Link 3
-                </a>
-              </li>
             </ul>
           </div>
         </div>

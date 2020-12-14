@@ -1,0 +1,6 @@
+{
+  "authSelections": "userPoolOnly",
+  "resourceName": "mycloudstorage85a68d6d",
+  "serviceType": "imported",
+  "region": "eu-central-1"
+}
