@@ -1,19 +1,28 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
 import Amplify from "aws-amplify";
+import { createStore } from "redux";
+import { Provider } from "react-redux";
 
-import awsconfig from './aws-exports';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import awsconfig from "./aws-exports";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import rootrReducer from "./redux/reducers/rootrReducer";
 
 Amplify.configure(awsconfig);
+const store = createStore(
+  rootrReducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function

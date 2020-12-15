@@ -1,0 +1,3 @@
+export const LOGIN_USER = "APP/LOGIN_USER"
+export const LOGOUT_USER = "APP/LOGOUT_USER"
+export const SIGNUP_USER = "APP/SIGNUP_USER"

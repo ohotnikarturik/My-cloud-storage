@@ -10,7 +10,7 @@ const Home = () => {
     <div className="container">
       <div className="row">
         <div className="col s12 ">
-          <h4 style={mainTitle} className="center-align blue-grey-text text-darken-3">Welcome to Cloud Storage</h4>
+          <h4 style={mainTitle} className="blue-grey-text text-darken-3">Welcome to Cloud Storage</h4>
         </div>
       </div>
     </div>

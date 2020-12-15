@@ -45,7 +45,7 @@ const SignUp = () => {
       .matches(/^(?=.*[A-Z])/, "At least one a uppercase letter is required")
       .matches(/^(?=.*[0-9])/, "At least one a number is required")
       .matches(
-        /^(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/,
+        /^(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/,
         "At least one a special character is required"
       )
       .matches(/^(.*)?\S+(.*)?$/, "Cannot be empty."),

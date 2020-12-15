@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Auth } from "aws-amplify";
 import { NavLink, useHistory } from "react-router-dom";
 import { Formik } from "formik";
-import * as Yup from "yup";
 import { object, string } from "yup";
 
 import { useMessage } from "../hooks/message.hook";
