@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 
 import Home from "./pages/Home";
+import LogIn from "./pages/LogIn";
 import SignUp from "./pages/SignUp";
 import Storage from "./pages/Storage";
 import Welcome from "./pages/Welcome";
@@ -17,6 +18,9 @@ export const useRoutes = () => (
     </Route>
     <Route path="/storage">
       <Storage />
+    </Route>
+    <Route path="/login">
+      <LogIn />
     </Route>
     <Route path="/signup">
       <SignUp />

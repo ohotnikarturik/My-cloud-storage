@@ -7,7 +7,7 @@ import { object, string } from "yup";
 
 import { useMessage } from "../hooks/message.hook";
 
-const SignUp = () => {
+const LogIn = () => {
   const message = useMessage();
   const history = useHistory();
   const mainTitle = {
@@ -16,9 +16,7 @@ const SignUp = () => {
   };
   const initialValues = {
     username: "",
-    email: "",
     password: "",
-    confirmPassword: "",
   };
   const [cognitoError, setCognitoError] = useState({ error: "" });
 
@@ -33,46 +31,21 @@ const SignUp = () => {
       .max(30, "Name should not exceed 30 characters.")
       .required("Please, provide your name.")
       .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty."),
-    email: string()
-      .email("Email must be a valid email")
-      .required("Please, provide your email.")
-      .matches(/^(.*)?\S+(.*)?$/, "Cannot be empty."),
     password: string()
       .min(8, "Password should be at least 8 characters.")
       .max(30, "Password should not exceed 30 characters.")
       .required("Please, provide your password.")
-      .matches(/^(?=.*[a-z])/, "At least one a lowercase letter is required")
-      .matches(/^(?=.*[A-Z])/, "At least one a uppercase letter is required")
-      .matches(/^(?=.*[0-9])/, "At least one a number is required")
-      .matches(
-        /^(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/,
-        "At least one a special character is required"
-      )
-      .matches(/^(.*)?\S+(.*)?$/, "Cannot be empty."),
-    confirmPassword: Yup.string().when("password", {
-      is: (val) => (val && val.length > 0 ? true : false),
-      then: Yup.string().oneOf(
-        [Yup.ref("password")],
-        "Both password should to be the same"
-      ),
-    }),
   });
 
   const onSubmit = async (values, { resetForm }) => {
     console.log("handleSubmit", values);
-    const { username, email, password } = values;
+    const { username, password } = values;
     try {
-      const signUpResponse = await Auth.signUp({
-        username,
-        password,
-        attributes: {
-          email,
-        },
-      });
+      const user = await Auth.signIn(username, password);
       resetForm({});
-      message(`User ${signUpResponse.user.username} was created successful`);
-      history.push("/welcome");
-      console.log(signUpResponse);
+      message(`User ${username} was signed in successful`);
+      history.push("/storage");
+      console.log(user);
     } catch (error) {
       console.log(error);
       setCognitoError({
@@ -88,7 +61,7 @@ const SignUp = () => {
         style={mainTitle}
         className="col s6 offset-s3 blue-grey-text text-darken-3"
       >
-        Sign up
+        Log in
       </h4>
       <Formik
         initialValues={initialValues}
@@ -131,30 +104,6 @@ const SignUp = () => {
             </div>
             <div className="row">
               <div className="input-field col s6 offset-s3">
-                <i className="material-icons  prefix">email</i>
-                <input
-                  onChange={handleChange("email")}
-                  id="email"
-                  type="email"
-                  className="validate"
-                  value={values.email}
-                  onBlur={handleBlur("email")}
-                />
-                <label htmlFor="email">Email</label>
-                <div style={{ height: "5px", paddingLeft: "42px" }}>
-                  {errors.email && touched.email && (
-                    <div
-                      style={{ fontSize: "12px" }}
-                      className="pink-text text-accent-3"
-                    >
-                      {errors.email}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="input-field col s6 offset-s3">
                 <i className="material-icons prefix">password</i>
                 <input
                   onChange={handleChange("password")}
@@ -177,30 +126,6 @@ const SignUp = () => {
                 </div>
               </div>
             </div>
-            <div className="row">
-              <div className="input-field col s6 offset-s3">
-                <i className="material-icons prefix">password</i>
-                <input
-                  onChange={handleChange("confirmPassword")}
-                  id="confirmpassword"
-                  type="password"
-                  className="validate"
-                  value={values.confirmPassword}
-                  onBlur={handleBlur("confirmPassword")}
-                />
-                <label htmlFor="confirmpassword">Confirm password</label>
-                <div style={{ height: "5px", paddingLeft: "42px" }}>
-                  {errors.confirmPassword && touched.confirmPassword && (
-                    <div
-                      style={{ fontSize: "12px" }}
-                      className="pink-text text-accent-3"
-                    >
-                      {errors.confirmPassword}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
             <div className="col s6 offset-s3">
               <NavLink
                 to="/forgotpassword"
@@ -208,13 +133,14 @@ const SignUp = () => {
               >
                 Forgot password?
               </NavLink>
+
               <button
                 type="submit"
                 className={`waves-effect waves-light btn-small right ${
                   !isValid && "disabled"
                 }`}
               >
-                Sign up
+                Log in
               </button>
             </div>
           </form>
@@ -224,4 +150,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default LogIn;

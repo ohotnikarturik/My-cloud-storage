@@ -23,7 +23,7 @@ export const NavBar = () => {
             <NavLink to="/storage">Storage</NavLink>
           </li>
           <li>
-            <NavLink to="/welcome" className="waves-effect waves-light btn-small">
+            <NavLink to="/login" className="waves-effect waves-light btn-small">
               Log in
               <i style={{ fontSize: "20px" }} className="material-icons right">login</i>
             </NavLink>
