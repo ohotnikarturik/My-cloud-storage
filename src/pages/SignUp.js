@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Auth } from "aws-amplify";
 import { NavLink, useHistory } from "react-router-dom";
-
-// import FormErrors from "../FormErrors";
-import Validate from "../components/utility/FormValidation";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import { object, string } from "yup";
 
 const SignUp = () => {
   const mainTitle = {
@@ -12,13 +12,13 @@ const SignUp = () => {
   };
   const history = useHistory();
 
-  const [user, setUser] = useState({
+  const initialValues = {
     username: "",
     email: "",
     password: "",
-    confirmpassword: "",
-  });
-  console.log('state',user);
+    confirmPassword: "",
+  };
+  console.log("state", initialValues);
 
   const [error, setError] = useState({
     errors: {
@@ -38,33 +38,46 @@ const SignUp = () => {
     });
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const validationSchema = object().shape({
+    username: string()
+      .min(2, "Name must be at least 2 characters")
+      .max(30, "Name should not exceed 30 characters.")
+      .required("Please, provide your name.")
+      .matches(/^(.*)?\S+(.*)?$/, "Cannot be empty."),
+    email: string()
+      .email("Email must be a valid email")
+      .required("Please, provide your email.")
+      .matches(/^(.*)?\S+(.*)?$/, "Cannot be empty."),
+    password: string()
+      .min(8, "Password should be at least 8 characters.")
+      .max(30, "Password should not exceed 30 characters.")
+      .required("Please, provide your password.")
+      .matches(/^(.*)?\S+(.*)?$/, "Cannot be empty."),
+    confirmPassword: Yup.string().when("password", {
+      is: (val) => (val && val.length > 0 ? true : false),
+      then: Yup.string().oneOf(
+        [Yup.ref("password")],
+        "Both password need to be the same"
+      ),
+    }),
+  });
 
-    // Form validation
-    // clearErrorState();
-    // const error = Validate(event, user);
-    // if (error) {
-    //   setError({
-    //     errors: { ...error.errors, ...error },
-    //   });
-    // }
-
+  const onSubmit = async (values, submitProps) => {
     // AWS Cognito integration here
-    console.log(user);
-    const { username, email, password } = user;
+    console.log("handleSubmit", values);
+    const { username, email, password } = values;
     try {
       const signUpResponse = await Auth.signUp({
         username,
         password,
         attributes: {
-          email: email,
+          email,
         },
       });
-      history.push("/storage");
+      history.push("/welcome");
       console.log(signUpResponse);
     } catch (error) {
-      console.log(error) 
+      console.log(error);
       let err = null;
       !error.message ? (err = { message: error }) : (err = error);
       setError({
@@ -74,12 +87,7 @@ const SignUp = () => {
         },
       });
     }
-  };
-
-  const onInputChange = (event) => {
-    // setForm({ ...form, [event.target.name]: event.target.value })
-    setUser({ ...user, [event.target.id]: event.target.value });
-    // document.getElementById(event.target.id).classList.remove("is-danger");
+    submitProps.handleReset();
   };
 
   return (
@@ -90,162 +98,139 @@ const SignUp = () => {
       >
         Sign up
       </h4>
-      <form  className="col s12">
-        <div className="row">
-          <div className="input-field col s6 offset-s3">
-            <i className="material-icons  prefix">account_circle</i>
-            <input
-              onChange={onInputChange}
-              id="username"
-              type="text"
-              className="validate"
-              value={user.username}
-            />
-            <label htmlFor="username">User Name</label>
-          </div>
-        </div>
-        <div className="row">
-          <div className="input-field col s6 offset-s3">
-            <i className="material-icons  prefix">email</i>
-            <input
-              onChange={onInputChange}
-              id="email"
-              type="email"
-              className="validate"
-              value={user.email}
-            />
-            <label htmlFor="email">Email</label>
-          </div>
-        </div>
-        <div className="row">
-          <div className="input-field col s6 offset-s3">
-            <i className="material-icons prefix">password</i>
-            <input
-              onChange={onInputChange}
-              id="password"
-              type="password"
-              className="validate teal-input"
-              value={user.password}
-            />
-            <label htmlFor="password">Password</label>
-          </div>
-        </div>
-        <div className="row">
-          <div className="input-field col s6 offset-s3">
-            <i className="material-icons prefix">password</i>
-            <input
-              onChange={onInputChange}
-              id="confirmpassword"
-              type="password"
-              className="validate"
-              value={user.confirmpassword}
-            />
-            <label htmlFor="confirmpassword">Confirm password</label>
-          </div>
-        </div>
-      </form>
-      <div>
-        <div style={{marginBottom: "20px"}} className="col s6 offset-s3">
-          <NavLink
-            to="/forgotpassword"
-            className="waves-effect waves-light btn-small blue-grey darken-2 right" 
-          >
-            Forgot password?
-          </NavLink>
-        </div>
-        <div className="col s6 offset-s3">
-          <NavLink
-            onClick={handleSubmit}
-            to="/signup"
-            className="waves-effect waves-light btn-small right"
-          >
-            Sign up
-          </NavLink>
-        </div>
-      </div>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+      >
+        {({
+          values,
+          handleSubmit,
+          errors,
+          handleChange,
+          handleBlur,
+          touched,
+        }) => (
+          <form onSubmit={handleSubmit} className="col s12">
+            <div className="row">
+              <div className="input-field col s6 offset-s3">
+                <i className="material-icons  prefix">account_circle</i>
+                <input
+                  onChange={handleChange("username")}
+                  id="username"
+                  type="text"
+                  className="validate"
+                  value={values.username}
+                  onBlur={handleBlur("username")}
+                />
+                <label htmlFor="username">User Name</label>
+                <div style={{ height: "5px", paddingLeft: "42px" }}>
+                  {errors.username && touched.username && (
+                    <div
+                      style={{ fontSize: "12px" }}
+                      className="pink-text text-accent-3"
+                    >
+                      {errors.username}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="input-field col s6 offset-s3">
+                <i className="material-icons  prefix">email</i>
+                <input
+                  onChange={handleChange("email")}
+                  id="email"
+                  type="email"
+                  className="validate"
+                  value={values.email}
+                  onBlur={handleBlur("email")}
+                />
+                <label htmlFor="email">Email</label>
+                <div style={{ height: "5px", paddingLeft: "42px" }}>
+                  {errors.email && touched.email && (
+                    <div
+                      style={{ fontSize: "12px" }}
+                      className="pink-text text-accent-3"
+                    >
+                      {errors.email}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="input-field col s6 offset-s3">
+                <i className="material-icons prefix">password</i>
+                <input
+                  onChange={handleChange("password")}
+                  id="password"
+                  type="password"
+                  className="validate teal-input"
+                  value={values.password}
+                  onBlur={handleBlur("password")}
+                />
+                <label htmlFor="password">Password</label>
+                <div style={{ height: "5px", paddingLeft: "42px" }}>
+                  {errors.password && touched.password && (
+                    <div
+                      style={{ fontSize: "12px" }}
+                      className="pink-text text-accent-3"
+                    >
+                      {errors.password}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="input-field col s6 offset-s3">
+                <i className="material-icons prefix">password</i>
+                <input
+                  onChange={handleChange("confirmPassword")}
+                  id="confirmpassword"
+                  type="password"
+                  className="validate"
+                  value={values.confirmPassword}
+                  onBlur={handleBlur("confirmPassword")}
+                />
+                <label htmlFor="confirmpassword">Confirm password</label>
+                <div style={{ height: "5px", paddingLeft: "42px" }}>
+                  {errors.confirmPassword && touched.confirmPassword && (
+                    <div
+                      style={{ fontSize: "12px" }}
+                      className="pink-text text-accent-3"
+                    >
+                      {errors.confirmPassword}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="col s6 offset-s3">
+              
+                <NavLink
+                  to="/forgotpassword"
+                  className="waves-effect waves-light btn-small blue-grey darken-2"
+                >
+                  Forgot password?
+                </NavLink>
+            
+              
+                <button
+                  type="submit"
+                  className="waves-effect waves-light btn-small right"
+                >
+                  Sign up
+                </button>
+             
+            </div>
+          </form>
+        )}
+      </Formik>
     </div>
   );
-
-  // <section className="section auth">
-  //   <div className="container">
-  //     <h1>Register</h1>
-  //     <FormErrors formerrors={this.state.errors} />
-
-  //     <form onSubmit={this.handleSubmit}>
-  //       <div className="field">
-  //         <p className="control">
-  //           <input
-  //             className="input"
-  //             type="text"
-  //             id="username"
-  //             aria-describedby="userNameHelp"
-  //             placeholder="Enter username"
-  //             value={this.state.username}
-  //             onChange={this.onInputChange}
-  //           />
-  //         </p>
-  //       </div>
-  //       <div className="field">
-  //         <p className="control has-icons-left has-icons-right">
-  //           <input
-  //             className="input"
-  //             type="email"
-  //             id="email"
-  //             aria-describedby="emailHelp"
-  //             placeholder="Enter email"
-  //             value={this.state.email}
-  //             onChange={this.onInputChange}
-  //           />
-  //           <span className="icon is-small is-left">
-  //             <i className="fas fa-envelope"></i>
-  //           </span>
-  //         </p>
-  //       </div>
-  //       <div className="field">
-  //         <p className="control has-icons-left">
-  //           <input
-  //             className="input"
-  //             type="password"
-  //             id="password"
-  //             placeholder="Password"
-  //             value={this.state.password}
-  //             onChange={this.onInputChange}
-  //           />
-  //           <span className="icon is-small is-left">
-  //             <i className="fas fa-lock"></i>
-  //           </span>
-  //         </p>
-  //       </div>
-  //       <div className="field">
-  //         <p className="control has-icons-left">
-  //           <input
-  //             className="input"
-  //             type="password"
-  //             id="confirmpassword"
-  //             placeholder="Confirm password"
-  //             value={this.state.confirmpassword}
-  //             onChange={this.onInputChange}
-  //           />
-  //           <span className="icon is-small is-left">
-  //             <i className="fas fa-lock"></i>
-  //           </span>
-  //         </p>
-  //       </div>
-  //       <div className="field">
-  //         <p className="control">
-  //           <a href="/forgotpassword">Forgot password?</a>
-  //         </p>
-  //       </div>
-  //       <div className="field">
-  //         <p className="control">
-  //           <button className="button is-success">
-  //             Register
-  //           </button>
-  //         </p>
-  //       </div>
-  //     </form>
-  //   </div>
-  // </section>
 };
 
 export default SignUp;

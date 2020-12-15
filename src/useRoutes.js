@@ -8,6 +8,7 @@ import {
 import Home from "./pages/Home";
 import SignUp from "./pages/SignUp";
 import Storage from "./pages/Storage";
+import Welcome from "./pages/Welcome";
 
 export const useRoutes = () => (
   <Switch>
@@ -19,6 +20,9 @@ export const useRoutes = () => (
     </Route>
     <Route path="/signup">
       <SignUp />
+    </Route>
+    <Route path="/welcome">
+      <Welcome />
     </Route>
     <Redirect to="/" />
   </Switch>
