@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Auth } from "aws-amplify";
 import { NavLink, useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { object, string } from "yup";
 
+import { useMessage } from "../hooks/message.hook";
+
 const SignUp = () => {
+  const message = useMessage()
+
   const mainTitle = {
     marginTop: "40px",
     marginBottom: "40px",
@@ -20,23 +24,12 @@ const SignUp = () => {
   };
   console.log("state", initialValues);
 
-  const [error, setError] = useState({
-    errors: {
-      cognito: null,
-      blankfield: false,
-      passwordmatch: false,
-    },
-  });
+  const [cognitoError, setCognitoError] = useState({ error: "" });
 
-  const clearErrorState = () => {
-    setError({
-      errors: {
-        cognito: null,
-        blankfield: false,
-        passwordmatch: false,
-      },
-    });
-  };
+  useEffect(() => {
+    message(cognitoError.error)
+    setCognitoError({ error: "" })
+  }, [cognitoError.error, message])
 
   const validationSchema = object().shape({
     username: string()
@@ -52,6 +45,13 @@ const SignUp = () => {
       .min(8, "Password should be at least 8 characters.")
       .max(30, "Password should not exceed 30 characters.")
       .required("Please, provide your password.")
+      .matches(/^(?=.*[a-z])/, "At least one a lowercase letter is required")
+      .matches(/^(?=.*[A-Z])/, "At least one a uppercase letter is required")
+      .matches(/^(?=.*[0-9])/, "At least one a number is required")
+      .matches(
+        /^(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/,
+        "At least one a special character is required"
+      )
       .matches(/^(.*)?\S+(.*)?$/, "Cannot be empty."),
     confirmPassword: Yup.string().when("password", {
       is: (val) => (val && val.length > 0 ? true : false),
@@ -62,8 +62,7 @@ const SignUp = () => {
     }),
   });
 
-  const onSubmit = async (values, submitProps) => {
-    // AWS Cognito integration here
+  const onSubmit = async (values, {resetForm}) => {
     console.log("handleSubmit", values);
     const { username, email, password } = values;
     try {
@@ -74,20 +73,16 @@ const SignUp = () => {
           email,
         },
       });
+      resetForm({})
+      message(`${signUpResponse.user.username} was created`)
       history.push("/welcome");
       console.log(signUpResponse);
     } catch (error) {
       console.log(error);
-      let err = null;
-      !error.message ? (err = { message: error }) : (err = error);
-      setError({
-        errors: {
-          ...error.errors,
-          cognito: err,
-        },
+      setCognitoError({
+        ...error, error: error.message
       });
     }
-    submitProps.handleReset();
   };
 
   return (
@@ -96,8 +91,9 @@ const SignUp = () => {
         style={mainTitle}
         className="col s6 offset-s3 blue-grey-text text-darken-3"
       >
-        Sign up
+        Sign up{cognitoError.error}
       </h4>
+      
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -110,6 +106,8 @@ const SignUp = () => {
           handleChange,
           handleBlur,
           touched,
+          dirty,
+          isValid,
         }) => (
           <form onSubmit={handleSubmit} className="col s12">
             <div className="row">
@@ -209,22 +207,19 @@ const SignUp = () => {
               </div>
             </div>
             <div className="col s6 offset-s3">
-              
-                <NavLink
-                  to="/forgotpassword"
-                  className="waves-effect waves-light btn-small blue-grey darken-2"
-                >
-                  Forgot password?
-                </NavLink>
-            
-              
-                <button
-                  type="submit"
-                  className="waves-effect waves-light btn-small right"
-                >
-                  Sign up
-                </button>
-             
+              <NavLink
+                to="/forgotpassword"
+                className="waves-effect waves-light btn-small blue-grey darken-2"
+              >
+                Forgot password?
+              </NavLink>
+
+              <button
+                type="submit"
+                className={`waves-effect waves-light btn-small right ${ !isValid && 'disabled'}`}
+              >
+                Sign up
+              </button>
             </div>
           </form>
         )}
