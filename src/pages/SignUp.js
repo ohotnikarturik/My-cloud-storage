@@ -1,14 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Auth } from "aws-amplify";
 import { NavLink, useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { object, string } from "yup";
+import { useDispatch } from "react-redux";
 
-import { useMessage } from "../hooks/message.hook";
+import {
+  signUpSuccess,
+  signUpFail,
+  showAlert,
+  hideAlert,
+} from "../redux/actions";
 
 const SignUp = () => {
-  const message = useMessage();
+  const dispatch = useDispatch();
   const history = useHistory();
   const mainTitle = {
     marginTop: "40px",
@@ -20,12 +26,6 @@ const SignUp = () => {
     password: "",
     confirmPassword: "",
   };
-  const [cognitoError, setCognitoError] = useState({ error: "" });
-
-  useEffect(() => {
-    message(cognitoError.error);
-    setCognitoError({ error: "" });
-  }, [cognitoError.error, message]);
 
   const validationSchema = object().shape({
     username: string()
@@ -69,16 +69,17 @@ const SignUp = () => {
           email,
         },
       });
+      console.log('user SignUp:', signUpResponse )
+      const userName = signUpResponse.user.username
       resetForm({});
-      message(`User ${signUpResponse.user.username} was created successful`);
+      dispatch(signUpSuccess(signUpResponse));
+      dispatch(showAlert(`User ${userName} was signed up successful`));
+      dispatch(hideAlert());
       history.push("/welcome");
-      console.log(signUpResponse);
     } catch (error) {
-      console.log(error);
-      setCognitoError({
-        ...error,
-        error: error.message,
-      });
+      dispatch(signUpFail());
+      dispatch(showAlert(error.message));
+      dispatch(hideAlert());
     }
   };
 

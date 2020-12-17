@@ -8,11 +8,11 @@ import awsconfig from "./aws-exports";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import rootrReducer from "./redux/reducers/rootrReducer";
+import rootReducer from "./redux/reducers/rootReducer";
 
 Amplify.configure(awsconfig);
 const store = createStore(
-  rootrReducer,
+  rootReducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 

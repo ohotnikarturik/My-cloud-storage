@@ -55,6 +55,10 @@ p {
   font-size: 12px !important;
 }
 
+p {
+  margin-bottom: 5px;
+}
+
 /* label focus color
 .input-field input:focus + label {
   color: #2cbbad !important;

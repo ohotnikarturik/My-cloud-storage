@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Auth } from "aws-amplify";
 import { NavLink, useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import { object, string } from "yup";
+import { useDispatch } from "react-redux";
 
-import { useMessage } from "../hooks/message.hook";
+import { logInSuccess, logInFail, showAlert, hideAlert } from "../redux/actions"
 
 const LogIn = () => {
-  const message = useMessage();
+  const dispatch = useDispatch()
   const history = useHistory();
   const mainTitle = {
     marginTop: "40px",
@@ -17,12 +18,6 @@ const LogIn = () => {
     username: "",
     password: "",
   };
-  const [cognitoError, setCognitoError] = useState({ error: "" });
-
-  useEffect(() => {
-    message(cognitoError.error);
-    setCognitoError({ error: "" });
-  }, [cognitoError.error, message]);
 
   const validationSchema = object().shape({
     username: string()
@@ -37,20 +32,22 @@ const LogIn = () => {
   });
 
   const onSubmit = async (values, { resetForm }) => {
-    console.log("handleSubmit", values);
     const { username, password } = values;
     try {
-      const user = await Auth.signIn(username, password);
+      const signInResponce = await Auth.signIn(username, password);
+      console.log(signInResponce)
+      
+      const userName = signInResponce.username
       resetForm({});
-      message(`User ${username} was signed in successful`);
+      dispatch(logInSuccess(signInResponce))
+      dispatch(showAlert(`User ${userName} was signed in successful`))
+      dispatch(hideAlert())
       history.push("/storage");
-      console.log(user);
     } catch (error) {
-      console.log(error);
-      setCognitoError({
-        ...error,
-        error: error.message,
-      });
+      resetForm({});
+      dispatch(logInFail())
+      dispatch(showAlert(error.message))
+      dispatch(hideAlert())
     }
   };
 

@@ -7,7 +7,7 @@ export const NavBar = () => {
     fontSize: "24px",
   };
 
-  const isLogged = useSelector((state) => state.login.isLogged);
+  const isLogged = useSelector((state) => state.auth.isLogged);
 
   return (
     <nav className="blue-grey darken-3">
@@ -66,7 +66,7 @@ export const NavBar = () => {
                   style={{ fontSize: "20px" }}
                   className="material-icons right"
                 >
-                  how_to_reg
+                  directions_walk
                 </i>
               </NavLink>
             </li>

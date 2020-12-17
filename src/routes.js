@@ -9,7 +9,7 @@ import Storage from "./pages/Storage";
 import Welcome from "./pages/Welcome";
 
 export const useRoutes = () => {
-  const isLogged = useSelector((state) => state.login.isLogged);
+  const isLogged = useSelector((state) => state.auth.isLogged);
 
   if (isLogged) {
     return (
@@ -17,6 +17,12 @@ export const useRoutes = () => {
         <Route path="/storage">
           <Storage />
         </Route>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route path="/welcome">
+        <Welcome />
+      </Route>
       </Switch>
     );
   }
@@ -31,9 +37,6 @@ export const useRoutes = () => {
       </Route>
       <Route path="/signup">
         <SignUp />
-      </Route>
-      <Route path="/welcome">
-        <Welcome />
       </Route>
       <Redirect to="/" />
     </Switch>
