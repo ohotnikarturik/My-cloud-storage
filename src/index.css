@@ -59,6 +59,11 @@ p {
   margin-bottom: 5px;
 }
 
+/* Loader color */
+.spinner-layer {
+  border-color: #37474f !important;
+}
+
 /* label focus color
 .input-field input:focus + label {
   color: #2cbbad !important;

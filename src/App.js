@@ -21,7 +21,7 @@ const App = () => {
   return (
     <Router>
       <NavBar />
-      <main style={{ minHeight: "100%" }}>{routes}</main>
+      <main style={{ height: "100%" }}>{routes}</main>
       <Footer />
     </Router>
   );

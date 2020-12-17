@@ -3,12 +3,21 @@ import { Auth } from "aws-amplify";
 import { NavLink, useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import { object, string } from "yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { logInSuccess, logInFail, showAlert, hideAlert } from "../redux/actions"
+import {
+  logInSuccess,
+  logInFail,
+  showAlert,
+  hideAlert,
+  showLoader,
+  hideLoader,
+} from "../redux/actions";
+import Loader from "../components/Loader";
 
 const LogIn = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.app.loading);
   const history = useHistory();
   const mainTitle = {
     marginTop: "40px",
@@ -28,28 +37,40 @@ const LogIn = () => {
     password: string()
       .min(8, "Password should be at least 8 characters.")
       .max(30, "Password should not exceed 30 characters.")
-      .required("Please, provide your password.")
+      .required("Please, provide your password."),
   });
 
-  const onSubmit = async (values, { resetForm }) => {
-    const { username, password } = values;
+  const onSubmit = async (values, { resetForm, setSubmitting }) => {
+    setSubmitting(false)
+    const { username, password } = values; 
     try {
-      const signInResponce = await Auth.signIn(username, password);
-      console.log(signInResponce)
-      
-      const userName = signInResponce.username
+      dispatch(showLoader());
+      const logInResponce = await Auth.signIn(username, password);
+      dispatch(hideLoader());
+      const userName = logInResponce.username;
       resetForm({});
-      dispatch(logInSuccess(signInResponce))
-      dispatch(showAlert(`User ${userName} was signed in successful`))
-      dispatch(hideAlert())
+      dispatch(logInSuccess(logInResponce));
+      dispatch(showAlert(`User ${userName} was signed in successful`));
+      dispatch(hideAlert());
       history.push("/storage");
     } catch (error) {
+      console.log(error)
+      
+      dispatch(hideLoader())
       resetForm({});
-      dispatch(logInFail())
-      dispatch(showAlert(error.message))
-      dispatch(hideAlert())
+      dispatch(logInFail());
+      dispatch(showAlert(error.message));
+      dispatch(hideAlert());
     }
   };
+
+  if (loading) {
+    return (
+      <div className="row container">
+          <div className="center-align" style={{marginTop: "200px"}}><Loader /></div>
+      </div>
+    );
+  }
 
   return (
     <div className="row container">

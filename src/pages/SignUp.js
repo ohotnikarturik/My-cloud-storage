@@ -4,17 +4,21 @@ import { NavLink, useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { object, string } from "yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   signUpSuccess,
   signUpFail,
   showAlert,
   hideAlert,
+  showLoader,
+  hideLoader,
 } from "../redux/actions";
+import Loader from "../components/Loader";
 
 const SignUp = () => {
   const dispatch = useDispatch();
+  const loading = useSelector((state) => state.app.loading);
   const history = useHistory();
   const mainTitle = {
     marginTop: "40px",
@@ -58,10 +62,11 @@ const SignUp = () => {
     }),
   });
 
-  const onSubmit = async (values, { resetForm }) => {
-    console.log("handleSubmit", values);
+  const onSubmit = async (values, { resetForm, setSubmitting }) => {
+    setSubmitting(false)
     const { username, email, password } = values;
     try {
+      dispatch(showLoader());
       const signUpResponse = await Auth.signUp({
         username,
         password,
@@ -69,19 +74,28 @@ const SignUp = () => {
           email,
         },
       });
-      console.log('user SignUp:', signUpResponse )
       const userName = signUpResponse.user.username
+      dispatch(hideLoader());
       resetForm({});
       dispatch(signUpSuccess(signUpResponse));
       dispatch(showAlert(`User ${userName} was signed up successful`));
       dispatch(hideAlert());
       history.push("/welcome");
     } catch (error) {
+      dispatch(hideLoader())
       dispatch(signUpFail());
       dispatch(showAlert(error.message));
       dispatch(hideAlert());
     }
   };
+
+  if (loading) {
+    return (
+      <div className="row container">
+          <div className="center-align" style={{marginTop: "200px"}}><Loader /></div>
+      </div>
+    );
+  }
 
   return (
     <div className="row container">
