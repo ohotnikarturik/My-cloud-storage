@@ -21,8 +21,8 @@ export const useRoutes = () => {
           <Home />
         </Route>
         <Route path="/welcome">
-        <Welcome />
-      </Route>
+          <Welcome />
+        </Route>
       </Switch>
     );
   }

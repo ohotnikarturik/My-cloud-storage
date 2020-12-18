@@ -82,8 +82,8 @@ const SignUp = () => {
       dispatch(hideAlert());
       history.push("/welcome");
     } catch (error) {
-      dispatch(hideLoader())
       dispatch(signUpFail());
+      dispatch(hideLoader())
       dispatch(showAlert(error.message));
       dispatch(hideAlert());
     }

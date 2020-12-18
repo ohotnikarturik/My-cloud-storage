@@ -23,8 +23,8 @@ export const NavBar = () => {
     try {
       dispatch(showLoader())
       await Auth.signOut()
-      dispatch(logOut()) 
       dispatch(hideLoader())
+      dispatch(logOut()) 
     } catch (error) {
       console.log(error)
       dispatch(hideLoader())

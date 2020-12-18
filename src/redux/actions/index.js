@@ -4,12 +4,17 @@ import {
   SIGNUP_FAIL,
   LOGIN_FAIL,
   LOGOUT,
+  GET_SESSION_SUCCESS,
+  GET_SESSION_FAIL,
   SHOW_LOADER,
   HIDE_LOADER,
   SHOW_ALERT,
   HIDE_ALERT,
+  GET_AUTH_USER_SUCCESS,
+  GET_AUTH_USER_FAIL,
 } from "../types";
 
+//AUTH
 export function signUpSuccess(user) {
   return {
     type: SIGNUP_SUCCESS,
@@ -46,6 +51,37 @@ export function logOut() {
   };
 }
 
+export function getSessionSuccess(user) {
+  return {
+    type: GET_SESSION_SUCCESS,
+    payload: {
+      user,
+    },
+  };
+}
+
+export function getSessionFail() {
+  return {
+    type: GET_SESSION_FAIL,
+  };
+}
+
+export function getAuthenticatedUserSuccess(user) {
+  return {
+    type: GET_AUTH_USER_SUCCESS,
+    payload: {
+      user,
+    },
+  };
+}
+
+export function getAuthenticatedUserFail() {
+  return {
+    type: GET_AUTH_USER_FAIL,
+  };
+}
+
+//APP
 export const showLoader = () => {
   return {
     type: SHOW_LOADER,

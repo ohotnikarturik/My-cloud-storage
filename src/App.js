@@ -1,14 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "materialize-css";
 import { BrowserRouter as Router } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { Auth } from "aws-amplify";
 
 import { useRoutes } from "./routes";
 import { NavBar } from "./components/NavBar";
 import Footer from "./components/Footer";
 import { useMessage } from "./hooks/message.hook";
+import {
+  getSessionSuccess,
+  getSessionFail,
+  getAuthenticatedUserSuccess,
+  getAuthenticatedUserFail,
+} from "./redux/actions";
 
 const App = () => {
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const dispatch = useDispatch();
   const routes = useRoutes();
   const message = useMessage();
   const state = useSelector((state) => state.app);
@@ -18,12 +27,33 @@ const App = () => {
     message(alertMessage);
   }, [alertMessage, message]);
 
+  useEffect(() => {
+    const getCurrentSession = async () => {
+      try {
+        await Auth.currentSession();
+        dispatch(getSessionSuccess());
+        const user = await Auth.currentAuthenticatedUser();
+        dispatch(getAuthenticatedUserSuccess(user));
+        console.log("user", user);
+      } catch (error) {
+        console.log("error", error);
+        dispatch(getSessionFail());
+        dispatch(getAuthenticatedUserFail());
+      }
+    };
+
+    getCurrentSession();
+    setIsAuthenticating(true)
+  }, [dispatch]);
+  
   return (
-    <Router>
-      <NavBar />
-      <main style={{ height: "100%" }}>{routes}</main>
-      <Footer />
-    </Router>
+    isAuthenticating && (
+      <Router>
+        <NavBar />
+        <main style={{ height: "100%" }}>{routes}</main>
+        <Footer />
+      </Router>
+    )
   );
 };
 

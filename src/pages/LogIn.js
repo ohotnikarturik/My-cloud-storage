@@ -54,11 +54,9 @@ const LogIn = () => {
       dispatch(hideAlert());
       history.push("/storage");
     } catch (error) {
-      console.log(error)
-      
-      dispatch(hideLoader())
       resetForm({});
       dispatch(logInFail());
+      dispatch(hideLoader())
       dispatch(showAlert(error.message));
       dispatch(hideAlert());
     }
