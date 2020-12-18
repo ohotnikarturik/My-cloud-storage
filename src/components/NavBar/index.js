@@ -1,11 +1,37 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Auth } from "aws-amplify";
+import { useDispatch } from "react-redux";
+
+import {
+  logOut,
+  showAlert,
+  hideAlert,
+  showLoader,
+  hideLoader,
+} from "../../redux/actions";
 
 export const NavBar = () => {
+  const dispatch = useDispatch();
   const brandLogo = {
     fontSize: "24px",
   };
+
+  const handlerLogOut = async (e) => {
+    e.preventDefault()
+    try {
+      dispatch(showLoader())
+      await Auth.signOut()
+      dispatch(logOut()) 
+      dispatch(hideLoader())
+    } catch (error) {
+      console.log(error)
+      dispatch(hideLoader())
+      dispatch(showAlert(error.message));
+      dispatch(hideAlert());
+    }
+  }
 
   const isLogged = useSelector((state) => state.auth.isLogged);
 
@@ -60,15 +86,9 @@ export const NavBar = () => {
             </>
           ) : (
             <li>
-              <NavLink to="/" className="waves-effect waves-light btn-small">
+              <button onClick={handlerLogOut} className="btn waves-effect waves-light btn-small">
                 Log out
-                <i
-                  style={{ fontSize: "20px" }}
-                  className="material-icons right"
-                >
-                  directions_walk
-                </i>
-              </NavLink>
+              </button>
             </li>
           )}
         </ul>

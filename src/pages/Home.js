@@ -1,7 +1,10 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Home = () => {
+  const state = useSelector((state) => state.auth);
+  const isLogged = state.isLogged;
   const mainTitle = {
     marginTop: "40px",
     marginBottom: "40px",
@@ -14,10 +17,18 @@ const Home = () => {
           <h4 style={mainTitle} className="blue-grey-text text-darken-3">
             Welcome to Cloud Storage
           </h4>
-          <p>
-            To start use your storage, please <NavLink to="/signup">Sign Up</NavLink> or{" "}
-            <NavLink to="/login">Log In</NavLink>
-          </p>
+          {isLogged ? (
+            <p>
+              You are signed in. Your <NavLink to="/storage">Storage</NavLink>{" "}
+              avaible to you.
+            </p>
+          ) : (
+            <p>
+              To start use your storage, please{" "}
+              <NavLink to="/signup">Sign Up</NavLink> or{" "}
+              <NavLink to="/login">Log In</NavLink>
+            </p>
+          )}
         </div>
       </div>
     </div>

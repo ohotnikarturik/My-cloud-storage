@@ -17,7 +17,7 @@ const Storage = () => {
           <h4 style={mainTitle} className="blue-grey-text text-darken-3">
             Welcome{" "}
             <span className="purple-text text-lighten-2">{userName}</span> to
-            your Cloud storage
+            your Cloud storage 
           </h4>
         </div>
       </div>
