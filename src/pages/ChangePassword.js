@@ -2,12 +2,11 @@ import React from "react";
 import { Auth } from "aws-amplify";
 import { NavLink, useHistory } from "react-router-dom";
 import { Formik } from "formik";
+import * as Yup from "yup";
 import { object, string } from "yup";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
-  logInSuccess,
-  logInFail,
   showAlert,
   hideAlert,
   showLoader,
@@ -15,7 +14,7 @@ import {
 } from "../redux/actions";
 import Loader from "../components/Loader";
 
-const LogIn = () => {
+const ChangePassword = () => {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.app.loading);
   const history = useHistory();
@@ -24,8 +23,10 @@ const LogIn = () => {
     marginBottom: "40px",
   };
   const initialValues = {
-    username: "",
-    password: "",
+    oldPassword: "",
+    email: "",
+    password: "Art130186@",
+    confirmPassword: "Art130186@",
   };
 
   const validationSchema = object().shape({
@@ -34,27 +35,51 @@ const LogIn = () => {
       .max(30, "Name should not exceed 30 characters.")
       .required("Please, provide your name.")
       .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty."),
+    email: string()
+      .email("Email must be a valid email")
+      .required("Please, provide your email.")
+      .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty."),
     password: string()
       .min(8, "Password should be at least 8 characters.")
       .max(30, "Password should not exceed 30 characters.")
-      .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty.")
-      .required("Please, provide your password."),
+      .required("Please, provide your password.")
+      .matches(/^(?=.*[a-z])/, "At least one a lowercase letter is required")
+      .matches(/^(?=.*[A-Z])/, "At least one a uppercase letter is required")
+      .matches(/^(?=.*[0-9])/, "At least one a number is required")
+      .matches(
+        /^(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/,
+        "At least one a special character is required"
+      )
+      .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty."),
+    confirmPassword: Yup.string().when("password", {
+      is: (val) => (val && val.length > 0 ? true : false),
+      then: Yup.string().oneOf(
+        [Yup.ref("password")],
+        "Both password should to be the same"
+      ),
+    }),
   });
 
   const onSubmit = async (values) => {
-    const { username, password } = values;
+    const { username, email, password } = values;
     try {
       dispatch(showLoader());
-      const logInResponce = await Auth.signIn(username, password);
+      const signUpResponse = await Auth.signUp({
+        username,
+        password,
+        attributes: {
+          email,
+        },
+      });
+      const userName = signUpResponse.user.username
       dispatch(hideLoader());
-      const userName = logInResponce.username;
-      dispatch(logInSuccess(logInResponce));
-      dispatch(showAlert(`User ${userName} was signed in successful`));
+      dispatch(signUpSuccess(signUpResponse));
+      dispatch(showAlert(`User ${userName} is created`));
       dispatch(hideAlert());
-      history.push("/storage");
+      history.push("/welcome");
     } catch (error) {
-      dispatch(logInFail());
-      dispatch(hideLoader());
+      dispatch(signUpFail());
+      dispatch(hideLoader())
       dispatch(showAlert(error.message));
       dispatch(hideAlert());
     }
@@ -63,9 +88,7 @@ const LogIn = () => {
   if (loading) {
     return (
       <div className="row container">
-        <div className="center-align" style={{ marginTop: "200px" }}>
-          <Loader />
-        </div>
+          <div className="center-align" style={{marginTop: "200px"}}><Loader /></div>
       </div>
     );
   }
@@ -76,7 +99,7 @@ const LogIn = () => {
         style={mainTitle}
         className="col s6 offset-s3 blue-grey-text text-darken-3"
       >
-        Log in
+        Sign up
       </h4>
       <Formik
         initialValues={initialValues}
@@ -119,6 +142,30 @@ const LogIn = () => {
             </div>
             <div className="row">
               <div className="input-field col s6 offset-s3">
+                <i className="material-icons  prefix">email</i>
+                <input
+                  onChange={handleChange("email")}
+                  id="email"
+                  type="email"
+                  className="validate"
+                  value={values.email}
+                  onBlur={handleBlur("email")}
+                />
+                <label htmlFor="email">Email</label>
+                <div style={{ height: "5px", paddingLeft: "42px" }}>
+                  {errors.email && touched.email && (
+                    <div
+                      style={{ fontSize: "12px" }}
+                      className="pink-text text-accent-3"
+                    >
+                      {errors.email}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="input-field col s6 offset-s3">
                 <i className="material-icons prefix">password</i>
                 <input
                   onChange={handleChange("password")}
@@ -141,6 +188,30 @@ const LogIn = () => {
                 </div>
               </div>
             </div>
+            <div className="row">
+              <div className="input-field col s6 offset-s3">
+                <i className="material-icons prefix">password</i>
+                <input
+                  onChange={handleChange("confirmPassword")}
+                  id="confirmpassword"
+                  type="password"
+                  className="validate"
+                  value={values.confirmPassword}
+                  onBlur={handleBlur("confirmPassword")}
+                />
+                <label htmlFor="confirmpassword">Confirm password</label>
+                <div style={{ height: "5px", paddingLeft: "42px" }}>
+                  {errors.confirmPassword && touched.confirmPassword && (
+                    <div
+                      style={{ fontSize: "12px" }}
+                      className="pink-text text-accent-3"
+                    >
+                      {errors.confirmPassword}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
             <div className="col s6 offset-s3">
               <NavLink
                 to="/forgotpassword"
@@ -148,14 +219,13 @@ const LogIn = () => {
               >
                 Forgot password?
               </NavLink>
-
               <button
                 type="submit"
                 className={`waves-effect waves-light btn-small right ${
                   !isValid && "disabled"
                 }`}
               >
-                Log in
+                Sign up
               </button>
             </div>
           </form>
@@ -165,4 +235,4 @@ const LogIn = () => {
   );
 };
 
-export default LogIn;
+export default ChangePassword;

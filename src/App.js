@@ -36,7 +36,6 @@ const App = () => {
         dispatch(getAuthenticatedUserSuccess(user));
         console.log("user", user);
       } catch (error) {
-        console.log("error", error);
         dispatch(getSessionFail());
         dispatch(getAuthenticatedUserFail());
       }

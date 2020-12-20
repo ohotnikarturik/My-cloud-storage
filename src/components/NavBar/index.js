@@ -14,6 +14,8 @@ import {
 
 export const NavBar = () => {
   const dispatch = useDispatch();
+  const isLogged = useSelector((state) => state.auth.isLogged);
+  // const isUserConfirmed = useSelector((state) => state.auth.user.user.userConfirmed);
   const brandLogo = {
     fontSize: "24px",
   };
@@ -24,6 +26,8 @@ export const NavBar = () => {
       dispatch(showLoader())
       await Auth.signOut()
       dispatch(hideLoader())
+      dispatch(showAlert("Good bye and welcome back"));
+      dispatch(hideAlert());
       dispatch(logOut()) 
     } catch (error) {
       console.log(error)
@@ -32,8 +36,6 @@ export const NavBar = () => {
       dispatch(hideAlert());
     }
   }
-
-  const isLogged = useSelector((state) => state.auth.isLogged);
 
   return (
     <nav className="blue-grey darken-3">

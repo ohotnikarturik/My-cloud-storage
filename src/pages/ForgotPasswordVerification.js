@@ -1,49 +1,41 @@
 import React from "react";
 import { Auth } from "aws-amplify";
-import { NavLink, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Formik } from "formik";
-import * as Yup from "yup";
 import { object, string } from "yup";
 import { useDispatch, useSelector } from "react-redux";
 
-import {
-  signUpSuccess,
-  signUpFail,
-  showAlert,
-  hideAlert,
-  showLoader,
-  hideLoader,
-} from "../redux/actions";
+import { showAlert, hideAlert, showLoader, hideLoader } from "../redux/actions";
 import Loader from "../components/Loader";
 
-const SignUp = () => {
+const ForgotPasswordVerification = () => {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.app.loading);
   const history = useHistory();
   const mainTitle = {
     marginTop: "40px",
-    marginBottom: "40px",
+    marginBottom: "20px",
   };
   const initialValues = {
-    username: "Artur",
-    email: "ohotnikarturik@gmail.com",
-    password: "Art130186@",
-    confirmPassword: "Art130186@",
+    verificationCode: "",
+    email: "",
+    newPassword: "",
   };
 
   const validationSchema = object().shape({
-    username: string()
-      .min(2, "Name must be at least 2 characters")
-      .max(30, "Name should not exceed 30 characters.")
-      .required("Please, provide your name.")
+    verificationCode: string()
+      .matches(/^[0-9]*$/, "Code should be only numbers")
+      .min(6, "Code should be minimum 6 numbers")
+      .max(6, "Code should be maximum 6 numbers")
+      .required("Please, provide verification code.")
       .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty."),
     email: string()
       .email("Email must be a valid email")
       .required("Please, provide your email.")
       .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty."),
-    password: string()
-      .min(8, "Password should be at least 8 characters.")
-      .max(30, "Password should not exceed 30 characters.")
+    newPassword: string()
+      .min(8, "New password should be at least 8 characters.")
+      .max(30, "New assword should not exceed 30 characters.")
       .required("Please, provide your password.")
       .matches(/^(?=.*[a-z])/, "At least one a lowercase letter is required")
       .matches(/^(?=.*[A-Z])/, "At least one a uppercase letter is required")
@@ -53,35 +45,19 @@ const SignUp = () => {
         "At least one a special character is required"
       )
       .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty."),
-    confirmPassword: Yup.string().when("password", {
-      is: (val) => (val && val.length > 0 ? true : false),
-      then: Yup.string().oneOf(
-        [Yup.ref("password")],
-        "Both password should to be the same"
-      ),
-    }),
   });
 
   const onSubmit = async (values) => {
-    const { username, email, password } = values;
+    const { verificationCode, email, newPassword } = values;
     try {
       dispatch(showLoader());
-      const signUpResponse = await Auth.signUp({
-        username,
-        password,
-        attributes: {
-          email,
-        },
-      });
-      const userName = signUpResponse.user.username
+      await Auth.forgotPasswordSubmit(email, verificationCode, newPassword);
       dispatch(hideLoader());
-      dispatch(signUpSuccess(signUpResponse));
-      dispatch(showAlert(`User ${userName} is created`));
+      dispatch(showAlert(`Your password updated`));
       dispatch(hideAlert());
-      history.push("/welcome");
+      history.push("/login");
     } catch (error) {
-      dispatch(signUpFail());
-      dispatch(hideLoader())
+      dispatch(hideLoader());
       dispatch(showAlert(error.message));
       dispatch(hideAlert());
     }
@@ -90,7 +66,9 @@ const SignUp = () => {
   if (loading) {
     return (
       <div className="row container">
-          <div className="center-align" style={{marginTop: "200px"}}><Loader /></div>
+        <div className="center-align" style={{ marginTop: "200px" }}>
+          <Loader />
+        </div>
       </div>
     );
   }
@@ -101,8 +79,13 @@ const SignUp = () => {
         style={mainTitle}
         className="col s6 offset-s3 blue-grey-text text-darken-3"
       >
-        Sign up
+        Set New Password
       </h4>
+      <p className="col s6 offset-s3" style={{ marginBottom: "50px" }}>
+        Please enter the verification code sent to your email address below,
+        your email address and a new password.
+      </p>
+
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -120,23 +103,25 @@ const SignUp = () => {
           <form onSubmit={handleSubmit} className="col s12">
             <div className="row">
               <div className="input-field col s6 offset-s3">
-                <i className="material-icons  prefix">account_circle</i>
+                <i className="material-icons  prefix">vpn_key</i>
                 <input
-                  onChange={handleChange("username")}
-                  id="username"
+                  onChange={handleChange("verificationCode")}
+                  id="verificationCode"
                   type="text"
                   className="validate"
-                  value={values.username}
-                  onBlur={handleBlur("username")}
+                  value={values.verificationCode}
+                  onBlur={handleBlur("verificationCode")}
                 />
-                <label htmlFor="username">User Name</label>
+                <label htmlFor="verificationCode">
+                  Enter verification code
+                </label>
                 <div style={{ height: "5px", paddingLeft: "42px" }}>
-                  {errors.username && touched.username && (
+                  {errors.verificationCode && touched.verificationCode && (
                     <div
                       style={{ fontSize: "12px" }}
                       className="pink-text text-accent-3"
                     >
-                      {errors.username}
+                      {errors.verificationCode}
                     </div>
                   )}
                 </div>
@@ -170,64 +155,34 @@ const SignUp = () => {
               <div className="input-field col s6 offset-s3">
                 <i className="material-icons prefix">password</i>
                 <input
-                  onChange={handleChange("password")}
-                  id="password"
+                  onChange={handleChange("newPassword")}
+                  id="newPassword"
                   type="password"
                   className="validate teal-input"
-                  value={values.password}
-                  onBlur={handleBlur("password")}
+                  value={values.newPassword}
+                  onBlur={handleBlur("newPassword")}
                 />
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password">New password</label>
                 <div style={{ height: "5px", paddingLeft: "42px" }}>
-                  {errors.password && touched.password && (
+                  {errors.newPassword && touched.newPassword && (
                     <div
                       style={{ fontSize: "12px" }}
                       className="pink-text text-accent-3"
                     >
-                      {errors.password}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="input-field col s6 offset-s3">
-                <i className="material-icons prefix">password</i>
-                <input
-                  onChange={handleChange("confirmPassword")}
-                  id="confirmpassword"
-                  type="password"
-                  className="validate"
-                  value={values.confirmPassword}
-                  onBlur={handleBlur("confirmPassword")}
-                />
-                <label htmlFor="confirmpassword">Confirm password</label>
-                <div style={{ height: "5px", paddingLeft: "42px" }}>
-                  {errors.confirmPassword && touched.confirmPassword && (
-                    <div
-                      style={{ fontSize: "12px" }}
-                      className="pink-text text-accent-3"
-                    >
-                      {errors.confirmPassword}
+                      {errors.newPassword}
                     </div>
                   )}
                 </div>
               </div>
             </div>
             <div className="col s6 offset-s3">
-              <NavLink
-                to="/forgotpassword"
-                className="waves-effect waves-light btn-small blue-grey darken-2"
-              >
-                Forgot password?
-              </NavLink>
               <button
                 type="submit"
                 className={`waves-effect waves-light btn-small right ${
                   !isValid && "disabled"
                 }`}
               >
-                Sign up
+                Submit
               </button>
             </div>
           </form>
@@ -237,4 +192,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default ForgotPasswordVerification;
