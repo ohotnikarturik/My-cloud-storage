@@ -6,12 +6,7 @@ import * as Yup from "yup";
 import { object, string } from "yup";
 import { useDispatch, useSelector } from "react-redux";
 
-import {
-  showAlert,
-  hideAlert,
-  showLoader,
-  hideLoader,
-} from "../redux/actions";
+import { showAlert, hideAlert, showLoader, hideLoader } from "../redux/actions";
 import Loader from "../components/Loader";
 
 const ChangePassword = () => {
@@ -24,22 +19,12 @@ const ChangePassword = () => {
   };
   const initialValues = {
     oldPassword: "",
-    email: "",
-    password: "Art130186@",
-    confirmPassword: "Art130186@",
+    newPassword: "",
+    confirmNewPassword: "",
   };
 
   const validationSchema = object().shape({
-    username: string()
-      .min(2, "Name must be at least 2 characters")
-      .max(30, "Name should not exceed 30 characters.")
-      .required("Please, provide your name.")
-      .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty."),
-    email: string()
-      .email("Email must be a valid email")
-      .required("Please, provide your email.")
-      .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty."),
-    password: string()
+    oldPassword: string()
       .min(8, "Password should be at least 8 characters.")
       .max(30, "Password should not exceed 30 characters.")
       .required("Please, provide your password.")
@@ -51,35 +36,46 @@ const ChangePassword = () => {
         "At least one a special character is required"
       )
       .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty."),
-    confirmPassword: Yup.string().when("password", {
-      is: (val) => (val && val.length > 0 ? true : false),
-      then: Yup.string().oneOf(
-        [Yup.ref("password")],
-        "Both password should to be the same"
-      ),
-    }),
+    newPassword: string()
+      .min(8, "Password should be at least 8 characters.")
+      .max(30, "Password should not exceed 30 characters.")
+      .required("Please, provide your password.")
+      .matches(/^(?=.*[a-z])/, "At least one a lowercase letter is required")
+      .matches(/^(?=.*[A-Z])/, "At least one a uppercase letter is required")
+      .matches(/^(?=.*[0-9])/, "At least one a number is required")
+      .matches(
+        /^(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/,
+        "At least one a special character is required"
+      )
+      .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty."),
+    confirmNewPassword: Yup.string()
+      .required("Please, provide your new password.")
+      .when("newPassword", {
+        is: (val) => (val && val.length > 0 ? true : false),
+        then: Yup.string().oneOf(
+          [Yup.ref("newPassword")],
+          "Both password should to be the same"
+        ),
+      }),
   });
 
   const onSubmit = async (values) => {
-    const { username, email, password } = values;
+    const { oldPassword, newPassword } = values;
     try {
       dispatch(showLoader());
-      const signUpResponse = await Auth.signUp({
-        username,
-        password,
-        attributes: {
-          email,
-        },
-      });
-      const userName = signUpResponse.user.username
+      const user = await Auth.currentAuthenticatedUser();
+      console.log("user", user);
+      console.log('!!!', oldPassword, newPassword)
+      
+      await Auth.changePassword(user, oldPassword, newPassword);
       dispatch(hideLoader());
-      dispatch(signUpSuccess(signUpResponse));
-      dispatch(showAlert(`User ${userName} is created`));
+      dispatch(showAlert(`!!!!!!!!!!`));
       dispatch(hideAlert());
-      history.push("/welcome");
+      history.push("/changepasswordconfirmation");
     } catch (error) {
-      dispatch(signUpFail());
-      dispatch(hideLoader())
+      console.log("er", error);
+
+      dispatch(hideLoader());
       dispatch(showAlert(error.message));
       dispatch(hideAlert());
     }
@@ -88,7 +84,9 @@ const ChangePassword = () => {
   if (loading) {
     return (
       <div className="row container">
-          <div className="center-align" style={{marginTop: "200px"}}><Loader /></div>
+        <div className="center-align" style={{ marginTop: "200px" }}>
+          <Loader />
+        </div>
       </div>
     );
   }
@@ -99,7 +97,7 @@ const ChangePassword = () => {
         style={mainTitle}
         className="col s6 offset-s3 blue-grey-text text-darken-3"
       >
-        Sign up
+        Change Password
       </h4>
       <Formik
         initialValues={initialValues}
@@ -118,71 +116,23 @@ const ChangePassword = () => {
           <form onSubmit={handleSubmit} className="col s12">
             <div className="row">
               <div className="input-field col s6 offset-s3">
-                <i className="material-icons  prefix">account_circle</i>
-                <input
-                  onChange={handleChange("username")}
-                  id="username"
-                  type="text"
-                  className="validate"
-                  value={values.username}
-                  onBlur={handleBlur("username")}
-                />
-                <label htmlFor="username">User Name</label>
-                <div style={{ height: "5px", paddingLeft: "42px" }}>
-                  {errors.username && touched.username && (
-                    <div
-                      style={{ fontSize: "12px" }}
-                      className="pink-text text-accent-3"
-                    >
-                      {errors.username}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="input-field col s6 offset-s3">
-                <i className="material-icons  prefix">email</i>
-                <input
-                  onChange={handleChange("email")}
-                  id="email"
-                  type="email"
-                  className="validate"
-                  value={values.email}
-                  onBlur={handleBlur("email")}
-                />
-                <label htmlFor="email">Email</label>
-                <div style={{ height: "5px", paddingLeft: "42px" }}>
-                  {errors.email && touched.email && (
-                    <div
-                      style={{ fontSize: "12px" }}
-                      className="pink-text text-accent-3"
-                    >
-                      {errors.email}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="input-field col s6 offset-s3">
                 <i className="material-icons prefix">password</i>
                 <input
-                  onChange={handleChange("password")}
-                  id="password"
+                  onChange={handleChange("oldPassword")}
+                  id="oldPassword"
                   type="password"
                   className="validate teal-input"
-                  value={values.password}
-                  onBlur={handleBlur("password")}
+                  value={values.oldPassword}
+                  onBlur={handleBlur("oldPassword")}
                 />
-                <label htmlFor="password">Password</label>
+                <label htmlFor="oldPassword">Old Password</label>
                 <div style={{ height: "5px", paddingLeft: "42px" }}>
-                  {errors.password && touched.password && (
+                  {errors.oldPassword && touched.oldPassword && (
                     <div
                       style={{ fontSize: "12px" }}
                       className="pink-text text-accent-3"
                     >
-                      {errors.password}
+                      {errors.oldPassword}
                     </div>
                   )}
                 </div>
@@ -192,21 +142,45 @@ const ChangePassword = () => {
               <div className="input-field col s6 offset-s3">
                 <i className="material-icons prefix">password</i>
                 <input
-                  onChange={handleChange("confirmPassword")}
-                  id="confirmpassword"
+                  onChange={handleChange("newPassword")}
+                  id="newPassword"
                   type="password"
-                  className="validate"
-                  value={values.confirmPassword}
-                  onBlur={handleBlur("confirmPassword")}
+                  className="validate teal-input"
+                  value={values.newPassword}
+                  onBlur={handleBlur("newPassword")}
                 />
-                <label htmlFor="confirmpassword">Confirm password</label>
+                <label htmlFor="newPassword">New Password</label>
                 <div style={{ height: "5px", paddingLeft: "42px" }}>
-                  {errors.confirmPassword && touched.confirmPassword && (
+                  {errors.newPassword && touched.newPassword && (
                     <div
                       style={{ fontSize: "12px" }}
                       className="pink-text text-accent-3"
                     >
-                      {errors.confirmPassword}
+                      {errors.newPassword}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="input-field col s6 offset-s3">
+                <i className="material-icons prefix">password</i>
+                <input
+                  onChange={handleChange("confirmNewPassword")}
+                  id="confirmNewPassword"
+                  type="password"
+                  className="validate"
+                  value={values.confirmNewPassword}
+                  onBlur={handleBlur("confirmNewPassword")}
+                />
+                <label htmlFor="confirmNewPassword">Confirm New password</label>
+                <div style={{ height: "5px", paddingLeft: "42px" }}>
+                  {errors.confirmNewPassword && touched.confirmNewPassword && (
+                    <div
+                      style={{ fontSize: "12px" }}
+                      className="pink-text text-accent-3"
+                    >
+                      {errors.confirmNewPassword}
                     </div>
                   )}
                 </div>
@@ -225,7 +199,7 @@ const ChangePassword = () => {
                   !isValid && "disabled"
                 }`}
               >
-                Sign up
+                Submit
               </button>
             </div>
           </form>

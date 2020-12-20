@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import { object, string } from "yup";
 import { useDispatch, useSelector } from "react-redux";
+import * as Yup from "yup";
 
 import { showAlert, hideAlert, showLoader, hideLoader } from "../redux/actions";
 import Loader from "../components/Loader";
@@ -20,6 +21,7 @@ const ForgotPasswordVerification = () => {
     verificationCode: "",
     email: "",
     newPassword: "",
+    confirmNewPassword: "",
   };
 
   const validationSchema = object().shape({
@@ -36,7 +38,7 @@ const ForgotPasswordVerification = () => {
     newPassword: string()
       .min(8, "New password should be at least 8 characters.")
       .max(30, "New assword should not exceed 30 characters.")
-      .required("Please, provide your password.")
+      .required("Please, provide your new password.")
       .matches(/^(?=.*[a-z])/, "At least one a lowercase letter is required")
       .matches(/^(?=.*[A-Z])/, "At least one a uppercase letter is required")
       .matches(/^(?=.*[0-9])/, "At least one a number is required")
@@ -45,6 +47,15 @@ const ForgotPasswordVerification = () => {
         "At least one a special character is required"
       )
       .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty."),
+    confirmNewPassword: Yup.string()
+      .required("Please, provide your new password.")
+      .when("newPassword", {
+        is: (val) => (val && val.length > 0 ? true : false),
+        then: Yup.string().oneOf(
+          [Yup.ref("newPassword")],
+          "Both password should to be the same"
+        ),
+      }),
   });
 
   const onSubmit = async (values) => {
@@ -55,7 +66,7 @@ const ForgotPasswordVerification = () => {
       dispatch(hideLoader());
       dispatch(showAlert(`Your password updated`));
       dispatch(hideAlert());
-      history.push("/login");
+      history.push("/changepasswordconfirmation");
     } catch (error) {
       dispatch(hideLoader());
       dispatch(showAlert(error.message));
@@ -81,7 +92,7 @@ const ForgotPasswordVerification = () => {
       >
         Set New Password
       </h4>
-      <p className="col s6 offset-s3" style={{ marginBottom: "50px" }}>
+      <p className="col s6 offset-s3" style={{ marginBottom: "30px" }}>
         Please enter the verification code sent to your email address below,
         your email address and a new password.
       </p>
@@ -170,6 +181,30 @@ const ForgotPasswordVerification = () => {
                       className="pink-text text-accent-3"
                     >
                       {errors.newPassword}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="input-field col s6 offset-s3">
+                <i className="material-icons prefix">password</i>
+                <input
+                  onChange={handleChange("confirmNewPassword")}
+                  id="confirmNewPassword"
+                  type="password"
+                  className="validate"
+                  value={values.confirmNewPassword}
+                  onBlur={handleBlur("confirmNewPassword")}
+                />
+                <label htmlFor="confirmNewPassword">Confirm New password</label>
+                <div style={{ height: "5px", paddingLeft: "42px" }}>
+                  {errors.confirmNewPassword && touched.confirmNewPassword && (
+                    <div
+                      style={{ fontSize: "12px" }}
+                      className="pink-text text-accent-3"
+                    >
+                      {errors.confirmNewPassword}
                     </div>
                   )}
                 </div>

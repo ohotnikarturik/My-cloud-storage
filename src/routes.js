@@ -10,6 +10,7 @@ import Welcome from "./pages/Welcome";
 import ForgotPassword from "./pages/ForgotPassword";
 import ForgotPasswordVerification from "./pages/ForgotPasswordVerification";
 import ChangePasswordConfirm from "./pages/ChangePasswordConfirm";
+import ChangePassword from "./pages/ChangePassword";
 
 export const useRoutes = () => {
   const isLogged = useSelector((state) => state.auth.isLogged);
@@ -17,14 +18,17 @@ export const useRoutes = () => {
   if (isLogged) {
     return (
       <Switch>
-        <Route path="/storage">
-          <Storage />
-        </Route>
         <Route exact path="/">
           <Home />
         </Route>
+        <Route path="/storage">
+          <Storage />
+        </Route>
         <Route path="/welcome">
           <Welcome />
+        </Route>
+        <Route path="/changepassword">
+          <ChangePassword />
         </Route>
       </Switch>
     );
@@ -47,7 +51,7 @@ export const useRoutes = () => {
       <Route path="/forgotpasswordverification">
         <ForgotPasswordVerification />
       </Route>
-      <Route path="/changepasswordconfirm">
+      <Route path="/changepasswordconfirmation">
         <ChangePasswordConfirm />
       </Route>
       <Redirect to="/" />

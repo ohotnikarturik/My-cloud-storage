@@ -88,7 +88,10 @@ export const NavBar = () => {
             </>
           ) : (
             <li>
-              <button onClick={handlerLogOut} className="btn waves-effect waves-light btn-small">
+              <NavLink to="changepassword" className="purple lighten-2 waves-effect waves-light btn-small">
+                Change Password
+              </NavLink>
+              <button onClick={handlerLogOut} className="waves-effect waves-light btn-small">
                 Log out
               </button>
             </li>

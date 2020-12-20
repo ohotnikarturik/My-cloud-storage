@@ -53,13 +53,15 @@ const SignUp = () => {
         "At least one a special character is required"
       )
       .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty."),
-    confirmPassword: Yup.string().when("password", {
-      is: (val) => (val && val.length > 0 ? true : false),
-      then: Yup.string().oneOf(
-        [Yup.ref("password")],
-        "Both password should to be the same"
-      ),
-    }),
+    confirmPassword: Yup.string()
+      .required("Please, provide your password.")
+      .when("password", {
+        is: (val) => (val && val.length > 0 ? true : false),
+        then: Yup.string().oneOf(
+          [Yup.ref("password")],
+          "Both password should to be the same"
+        ),
+      }),
   });
 
   const onSubmit = async (values) => {
@@ -73,7 +75,7 @@ const SignUp = () => {
           email,
         },
       });
-      const userName = signUpResponse.user.username
+      const userName = signUpResponse.user.username;
       dispatch(hideLoader());
       dispatch(signUpSuccess(signUpResponse));
       dispatch(showAlert(`User ${userName} is created`));
@@ -81,7 +83,7 @@ const SignUp = () => {
       history.push("/welcome");
     } catch (error) {
       dispatch(signUpFail());
-      dispatch(hideLoader())
+      dispatch(hideLoader());
       dispatch(showAlert(error.message));
       dispatch(hideAlert());
     }
@@ -90,7 +92,9 @@ const SignUp = () => {
   if (loading) {
     return (
       <div className="row container">
-          <div className="center-align" style={{marginTop: "200px"}}><Loader /></div>
+        <div className="center-align" style={{ marginTop: "200px" }}>
+          <Loader />
+        </div>
       </div>
     );
   }
