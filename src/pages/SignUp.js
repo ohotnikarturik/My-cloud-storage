@@ -25,10 +25,10 @@ const SignUp = () => {
     marginBottom: "40px",
   };
   const initialValues = {
-    username: "Artur",
-    email: "ohotnikarturik@gmail.com",
-    password: "Art130186@",
-    confirmPassword: "Art130186@",
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   };
 
   const validationSchema = object().shape({
