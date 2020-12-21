@@ -1,6 +1,6 @@
 import React from "react";
 import { Auth } from "aws-amplify";
-import { NavLink, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { object, string } from "yup";
@@ -69,16 +69,16 @@ const SignUp = () => {
     try {
       dispatch(showLoader());
       const signUpResponse = await Auth.signUp({
-        username,
+        username: email,
         password,
         attributes: {
-          email,
+          name: username,
         },
       });
-      const userName = signUpResponse.user.username;
+      const userEmail = signUpResponse.user.username;
       dispatch(hideLoader());
       dispatch(signUpSuccess(signUpResponse));
-      dispatch(showAlert(`User ${userName} is created`));
+      dispatch(showAlert(`Email ${userEmail} is registered`));
       dispatch(hideAlert());
       history.push("/welcome");
     } catch (error) {
@@ -124,30 +124,6 @@ const SignUp = () => {
           <form onSubmit={handleSubmit} className="col s12">
             <div className="row">
               <div className="input-field col s6 offset-s3">
-                <i className="material-icons  prefix">account_circle</i>
-                <input
-                  onChange={handleChange("username")}
-                  id="username"
-                  type="text"
-                  className="validate"
-                  value={values.username}
-                  onBlur={handleBlur("username")}
-                />
-                <label htmlFor="username">User Name</label>
-                <div style={{ height: "5px", paddingLeft: "42px" }}>
-                  {errors.username && touched.username && (
-                    <div
-                      style={{ fontSize: "12px" }}
-                      className="pink-text text-accent-3"
-                    >
-                      {errors.username}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="input-field col s6 offset-s3">
                 <i className="material-icons  prefix">email</i>
                 <input
                   onChange={handleChange("email")}
@@ -165,6 +141,30 @@ const SignUp = () => {
                       className="pink-text text-accent-3"
                     >
                       {errors.email}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="input-field col s6 offset-s3">
+                <i className="material-icons  prefix">account_circle</i>
+                <input
+                  onChange={handleChange("username")}
+                  id="username"
+                  type="text"
+                  className="validate"
+                  value={values.username}
+                  onBlur={handleBlur("username")}
+                />
+                <label htmlFor="username">User Name</label>
+                <div style={{ height: "5px", paddingLeft: "42px" }}>
+                  {errors.username && touched.username && (
+                    <div
+                      style={{ fontSize: "12px" }}
+                      className="pink-text text-accent-3"
+                    >
+                      {errors.username}
                     </div>
                   )}
                 </div>
@@ -219,12 +219,6 @@ const SignUp = () => {
               </div>
             </div>
             <div className="col s6 offset-s3">
-              <NavLink
-                to="/forgotpassword"
-                className="waves-effect waves-light btn-small blue-grey darken-2"
-              >
-                Forgot password?
-              </NavLink>
               <button
                 type="submit"
                 className={`waves-effect waves-light btn-small right ${

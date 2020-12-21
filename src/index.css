@@ -64,6 +64,23 @@ p {
   border-color: #37474f !important;
 }
 
+i.icon-black {
+  color: #37474f;
+  line-height: 0.9;
+}
+
+i.icon-blue {
+  color: #42a5f5;
+  line-height: 0.9;
+}
+
+i.icon-green {
+  color: #2cbbad;
+  line-height: 0.9;
+}
+
+
+
 /* label focus color
 .input-field input:focus + label {
   color: #2cbbad !important;

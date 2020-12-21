@@ -1,6 +1,6 @@
 import React from "react";
 import { Auth } from "aws-amplify";
-import { NavLink, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { object, string } from "yup";
@@ -63,18 +63,13 @@ const ChangePassword = () => {
     const { oldPassword, newPassword } = values;
     try {
       dispatch(showLoader());
-      const user = await Auth.currentAuthenticatedUser();
-      console.log("user", user);
-      console.log('!!!', oldPassword, newPassword)
-      
+      const user = await Auth.currentAuthenticatedUser();      
       await Auth.changePassword(user, oldPassword, newPassword);
       dispatch(hideLoader());
-      dispatch(showAlert(`!!!!!!!!!!`));
+      dispatch(showAlert(`Your password updated`));
       dispatch(hideAlert());
-      history.push("/changepasswordconfirmation");
+      history.push("/storage");
     } catch (error) {
-      console.log("er", error);
-
       dispatch(hideLoader());
       dispatch(showAlert(error.message));
       dispatch(hideAlert());
@@ -187,12 +182,6 @@ const ChangePassword = () => {
               </div>
             </div>
             <div className="col s6 offset-s3">
-              <NavLink
-                to="/forgotpassword"
-                className="waves-effect waves-light btn-small blue-grey darken-2"
-              >
-                Forgot password?
-              </NavLink>
               <button
                 type="submit"
                 className={`waves-effect waves-light btn-small right ${

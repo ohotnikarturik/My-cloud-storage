@@ -13,11 +13,11 @@
     },
     "categories": {
       "auth": {
-        "mycloudstorage85a68d6d": {
-          "userPoolId": "eu-central-1_x19rvlO1W",
-          "userPoolName": "My Cloud Storage",
-          "webClientId": "5s1ag5rinr7jj7u09i14fckva5",
-          "nativeClientId": "33d8qe8583loav4lopdc4gnic1"
+        "mycloudstorage6a4a1170": {
+          "userPoolId": "eu-central-1_UwzrtFq5Z",
+          "userPoolName": "my-cloud-storage",
+          "webClientId": "2rfo0s13irqot0h67cb1kud489",
+          "nativeClientId": "53ruapf60b6aspdnb2itl8og0d"
         }
       }
     }

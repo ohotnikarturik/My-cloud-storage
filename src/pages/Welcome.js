@@ -3,11 +3,11 @@ import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 
 const Welcome = () => {
-  const state = useSelector((state) => state.auth);
-  const userName = state.user.user.user.username;
+  const userEmail  = useSelector((state) => state.auth.user && state.auth.user.user.user.username);
+  
   const mainTitle = {
     marginTop: "40px",
-    marginBottom: "40px",
+    marginBottom: "20px",
   };
 
   return (
@@ -15,23 +15,20 @@ const Welcome = () => {
       <div className="row">
         <div className="col s12 ">
           <h4 style={mainTitle} className="blue-grey-text text-darken-3">
-            Hi, <span className="purple-text text-lighten-2">{userName}</span>
+            Hi, a new User!
           </h4>
           <p>
-            We just need to verify your account before you can access your Cloud
-            Storage
+            Check your email: <span className="purple-text text-lighten-2">
+              {userEmail}
+            </span>
           </p>
           <p>
-            We've sent you an email. Please check your mail and click on the
-            confirmation link to verify your account.
+            Click there on the confirmation link to verify your account and come back.
           </p>
-          <p>When you are done click on button below</p>
-          <NavLink to="/storage" className="waves-effect waves-light btn-small">
-            Confirmed
-            <i style={{ fontSize: "20px" }} className="material-icons right">
-              mark_email_read
-            </i>
-          </NavLink>
+          <p>
+            When you are done let's go and{" "}
+            <NavLink to="/login" className="blue-text text-lighten-1">Log in</NavLink>
+          </p>
         </div>
       </div>
     </div>

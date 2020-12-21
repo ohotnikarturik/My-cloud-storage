@@ -24,9 +24,6 @@ export const useRoutes = () => {
         <Route path="/storage">
           <Storage />
         </Route>
-        <Route path="/welcome">
-          <Welcome />
-        </Route>
         <Route path="/changepassword">
           <ChangePassword />
         </Route>
@@ -44,6 +41,9 @@ export const useRoutes = () => {
       </Route>
       <Route path="/signup">
         <SignUp />
+      </Route>
+      <Route path="/welcome">
+        <Welcome />
       </Route>
       <Route path="/forgotpassword">
         <ForgotPassword />

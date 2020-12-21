@@ -24,30 +24,38 @@ const LogIn = () => {
     marginBottom: "40px",
   };
   const initialValues = {
-    username: "",
+    email: "",
     password: "",
   };
 
   const validationSchema = object().shape({
-    username: string()
-      .min(2, "Name must be at least 2 characters")
-      .max(30, "Name should not exceed 30 characters.")
-      .required("Please, provide your name.")
+    email: string()
+      .email("Email must be a valid email")
+      .required("Please, provide your email.")
       .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty."),
-    password: string()
+      password: string()
       .min(8, "Password should be at least 8 characters.")
       .max(30, "Password should not exceed 30 characters.")
-      .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty.")
-      .required("Please, provide your password."),
+      .required("Please, provide your password.")
+      .matches(/^(?=.*[a-z])/, "At least one a lowercase letter is required")
+      .matches(/^(?=.*[A-Z])/, "At least one a uppercase letter is required")
+      .matches(/^(?=.*[0-9])/, "At least one a number is required")
+      .matches(
+        /^(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/,
+        "At least one a special character is required"
+      )
+      .matches(/^(.*)?\S+(.*)?$/, "Field cannot be empty."),
   });
 
   const onSubmit = async (values) => {
-    const { username, password } = values;
+    const { email, password } = values;
     try {
       dispatch(showLoader());
-      const logInResponce = await Auth.signIn(username, password);
+      const logInResponce = await Auth.signIn(email, password);
+      console.log('logInResponce', logInResponce)
+      
       dispatch(hideLoader());
-      const userName = logInResponce.username;
+      const userName = logInResponce.attributes.name;
       dispatch(logInSuccess(logInResponce));
       dispatch(showAlert(`User ${userName} was signed in successful`));
       dispatch(hideAlert());
@@ -93,25 +101,25 @@ const LogIn = () => {
           isValid,
         }) => (
           <form onSubmit={handleSubmit} className="col s12">
-            <div className="row">
+             <div className="row">
               <div className="input-field col s6 offset-s3">
-                <i className="material-icons  prefix">account_circle</i>
+                <i className="material-icons  prefix">email</i>
                 <input
-                  onChange={handleChange("username")}
-                  id="username"
-                  type="text"
+                  onChange={handleChange("email")}
+                  id="email"
+                  type="email"
                   className="validate"
-                  value={values.username}
-                  onBlur={handleBlur("username")}
+                  value={values.email}
+                  onBlur={handleBlur("email")}
                 />
-                <label htmlFor="username">User Name</label>
+                <label htmlFor="email">Email</label>
                 <div style={{ height: "5px", paddingLeft: "42px" }}>
-                  {errors.username && touched.username && (
+                  {errors.email && touched.email && (
                     <div
                       style={{ fontSize: "12px" }}
                       className="pink-text text-accent-3"
                     >
-                      {errors.username}
+                      {errors.email}
                     </div>
                   )}
                 </div>
