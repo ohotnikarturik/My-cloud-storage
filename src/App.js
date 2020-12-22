@@ -34,7 +34,6 @@ const App = () => {
         dispatch(getSessionSuccess());
         const user = await Auth.currentAuthenticatedUser();
         dispatch(getAuthenticatedUserSuccess(user));
-        console.log("user", user);
       } catch (error) {
         dispatch(getSessionFail());
         dispatch(getAuthenticatedUserFail());

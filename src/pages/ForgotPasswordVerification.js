@@ -93,10 +93,9 @@ const ForgotPasswordVerification = () => {
         Set New Password
       </h4>
       <p className="col s6 offset-s3" style={{ marginBottom: "30px" }}>
-        Please enter the verification code sent to your email address below,
-        your email address and a new password.
+        Please enter the verification code below, sent to your email address,
+        and set your new password.
       </p>
-
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}

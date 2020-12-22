@@ -1,6 +1,6 @@
 {
   "auth": {
-    "mycloudstoragee09bf652e09bf652": {
+    "mycloudstorage42ea8c7942ea8c79": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],

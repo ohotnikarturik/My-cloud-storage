@@ -1,19 +1,19 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-mycloudstorage-dev-92433-authRole",
-      "UnauthRoleArn": "arn:aws:iam::398573658390:role/amplify-mycloudstorage-dev-92433-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::398573658390:role/amplify-mycloudstorage-dev-92433-authRole",
+      "AuthRoleName": "amplify-mycloudstorage-dev-123415-authRole",
+      "UnauthRoleArn": "arn:aws:iam::398573658390:role/amplify-mycloudstorage-dev-123415-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::398573658390:role/amplify-mycloudstorage-dev-123415-authRole",
       "Region": "eu-central-1",
-      "DeploymentBucketName": "amplify-mycloudstorage-dev-92433-deployment",
-      "UnauthRoleName": "amplify-mycloudstorage-dev-92433-unauthRole",
-      "StackName": "amplify-mycloudstorage-dev-92433",
-      "StackId": "arn:aws:cloudformation:eu-central-1:398573658390:stack/amplify-mycloudstorage-dev-92433/bfa994a0-4426-11eb-bf61-029926a45418",
-      "AmplifyAppId": "d7m09y79xlcto"
+      "DeploymentBucketName": "amplify-mycloudstorage-dev-123415-deployment",
+      "UnauthRoleName": "amplify-mycloudstorage-dev-123415-unauthRole",
+      "StackName": "amplify-mycloudstorage-dev-123415",
+      "StackId": "arn:aws:cloudformation:eu-central-1:398573658390:stack/amplify-mycloudstorage-dev-123415/3fa568e0-4441-11eb-95c1-066f693c2efe",
+      "AmplifyAppId": "d3b0qy09er9iyp"
     },
     "categories": {
       "auth": {
-        "mycloudstoragee09bf652e09bf652": {}
+        "mycloudstorage42ea8c7942ea8c79": {}
       }
     }
   }

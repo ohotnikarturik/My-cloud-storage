@@ -42,7 +42,6 @@ export const NavBar = () => {
     <nav className="blue-grey darken-3">
       <div className="nav-wrapper container">
         <NavLink to="/" style={brandLogo} className="brand-logo">
-          Cloud storage
           <i style={{ fontSize: "50px" }} className="material-icons">
             cloud
           </i>
@@ -89,7 +88,7 @@ export const NavBar = () => {
             </>
           ) : (
             <li>
-              <NavLink to="changepassword" className="purple lighten-2 waves-effect waves-light btn-small">
+              <NavLink to="changepassword" className="blue waves-effect waves-light btn-small">
                 Change Password
               </NavLink>
               <button onClick={handlerLogOut} className="waves-effect waves-light btn-small">

@@ -68,7 +68,7 @@ const ChangePassword = () => {
       dispatch(hideLoader());
       dispatch(showAlert(`Your password updated`));
       dispatch(hideAlert());
-      history.push("/storage");
+      history.push("/changepasswordconfirmation");
     } catch (error) {
       dispatch(hideLoader());
       dispatch(showAlert(error.message));

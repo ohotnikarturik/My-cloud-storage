@@ -27,6 +27,9 @@ export const useRoutes = () => {
         <Route path="/changepassword">
           <ChangePassword />
         </Route>
+        <Route path="/changepasswordconfirmation">
+          <ChangePasswordConfirm />
+        </Route>
       </Switch>
     );
   }

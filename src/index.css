@@ -79,6 +79,15 @@ i.icon-green {
   line-height: 0.9;
 }
 
+/* shoul to change later */
+.hide-on-med-and-down {
+  display: block !important;
+}
+
+nav .brand-logo {
+  left: 0% !important;
+  transform: translateX(0%) !important;
+}
 
 
 /* label focus color

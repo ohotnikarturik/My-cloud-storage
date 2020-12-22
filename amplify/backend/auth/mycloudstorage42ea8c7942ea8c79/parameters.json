@@ -1,6 +1,6 @@
 {
-    "resourceNameTruncated": "mycloue09bf652",
-    "userPoolName": "mycloudstoragee09bf652_userpool_e09bf652",
+    "resourceNameTruncated": "myclou42ea8c79",
+    "userPoolName": "mycloudstorage42ea8c79_userpool_42ea8c79",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -31,10 +31,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "mycloue09bf652_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "myclou42ea8c79_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "e09bf652",
-    "resourceName": "mycloudstoragee09bf652e09bf652",
+    "sharedId": "42ea8c79",
+    "resourceName": "mycloudstorage42ea8c7942ea8c79",
     "authSelections": "userPoolOnly",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -58,6 +58,7 @@
     "hostedUI": false,
     "userPoolGroupList": [],
     "serviceName": "Cognito",
+    "usernameCaseSensitive": false,
     "parentStack": {
         "Ref": "AWS::StackId"
     },

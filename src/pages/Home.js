@@ -15,19 +15,32 @@ const Home = () => {
       <div className="row">
         <div className="col s12" style={{ marginBottom: "20px" }}>
           <h4 style={mainTitle} className="blue-grey-text text-darken-3">
-            Welcome to Cloud Storage
+            Welcome to My Cloud Storage
           </h4>
           {isLogged ? (
             <p>
-              You are signed in. Your <NavLink className="blue-text text-lighten-1" to="/storage">Storage</NavLink>{" "}
+              You are signed in. Your{" "}
+              <NavLink className="blue-text text-lighten-1" to="/storage">
+                Storage
+              </NavLink>{" "}
               avaible to you.
             </p>
           ) : (
-            <p>
-              To start use your storage, please{" "}
-              <NavLink className="blue-text text-lighten-1" to="/signup">Sign Up</NavLink> or{" "}
-              <NavLink className="blue-text text-lighten-1" to="/login">Log In</NavLink>
-            </p>
+            <>
+              <p>
+                Here you can store secure all of your private data
+              </p>
+              <p>
+                To start use your storage, please{" "}
+                <NavLink className="blue-text text-lighten-1" to="/signup">
+                  Sign Up
+                </NavLink>{" "}
+                or{" "}
+                <NavLink className="blue-text text-lighten-1" to="/login">
+                  Log In
+                </NavLink>
+              </p>
+            </>
           )}
         </div>
         <div
@@ -60,7 +73,11 @@ const Home = () => {
         </div>
         <div
           className="col s12"
-          style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "20px",
+          }}
         >
           <i
             style={{ fontSize: "100px", justifySelf: "center" }}

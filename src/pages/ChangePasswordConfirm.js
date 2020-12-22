@@ -1,7 +1,10 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ChangePasswordConfirm = () => {
+  const state = useSelector((state) => state.auth);
+  const isLogged = state.isLogged;
   const mainTitle = {
     marginTop: "40px",
     marginBottom: "20px",
@@ -16,7 +19,11 @@ const ChangePasswordConfirm = () => {
           </h4>
           <p>
             Your password has been successfully updated!{" "}
-            <NavLink to="/login">Log In</NavLink>
+            {isLogged ? (
+              <NavLink to="/storage">Storage</NavLink>
+            ) : (
+              <NavLink to="/login">Log In</NavLink>
+            )}
           </p>
         </div>
       </div>

@@ -52,8 +52,6 @@ const LogIn = () => {
     try {
       dispatch(showLoader());
       const logInResponce = await Auth.signIn(email, password);
-      console.log('logInResponce', logInResponce)
-      
       dispatch(hideLoader());
       const userName = logInResponce.attributes.name;
       dispatch(logInSuccess(logInResponce));
