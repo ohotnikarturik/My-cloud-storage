@@ -13,12 +13,7 @@
     },
     "categories": {
       "auth": {
-        "mycloudstorage62ca1993": {
-          "userPoolId": "eu-central-1_UwzrtFq5Z",
-          "userPoolName": "my-cloud-storage",
-          "webClientId": "2rfo0s13irqot0h67cb1kud489",
-          "nativeClientId": "53ruapf60b6aspdnb2itl8og0d"
-        }
+        "mycloudstoragee09bf652e09bf652": {}
       }
     }
   }
