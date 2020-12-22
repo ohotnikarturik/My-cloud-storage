@@ -1,6 +1,6 @@
 {
   "auth": {
-    "mycloudstorage6a4a1170": {
+    "mycloudstorage62ca1993": {
       "service": "Cognito",
       "serviceType": "imported",
       "providerPlugin": "awscloudformation",
