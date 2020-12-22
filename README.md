@@ -2,10 +2,10 @@
 
 # My Cloud Storage app
 
-> Web app build with React, Redux and AWS Amplify
-> The goal of "My Cloud Storage" app secure to store and retrieve all of clients data
-> "My Cloud Storage" app is now on vevelopment mode
-> The app now has Authetication features: Sign Up , Sign In, Forgot Password and Change Password
+> Web app build with React, Redux and AWS Amplify.
+> The goal of "My Cloud Storage" app secure to store and retrieve all of clients data.
+> "My Cloud Storage" app is now on vevelopment mode.
+> The app now has Authetication features: Sign Up , Sign In, Forgot Password and Change Password.
 
 ## Development
 
